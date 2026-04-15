@@ -34,6 +34,12 @@ class Program
       new Product { Id = 7, Name = "ShrimpTempura", Price = 415, RemainingStock = 8 }
     };
 
+    //Cart System
+    Product[] cart = new Product [10];
+    int[] cartQty = new int[10];
+    double[] cartSubtotal = new double[10];
+    int cartCount = 0;
+
     double grandTotal = 0;
     string choice = "Yes";
 
@@ -74,7 +80,27 @@ class Program
         Console. WriteLine("Invalid Quantity!");
         continue;
       }
-          
+
+      if (qty > selected.RemainingStock)
+      {
+        Console.WriteLine("Not enough stock available!");
+        continue;
+      }
+
+      //Check Duplicate
+      bool found = false;
+
+      for (int i = 0; i < cartcount; i++)
+      {
+        if (cart[i].Id == selected.Id)
+        {
+          cartQty[i] += qty;
+          cartSubtotal[i] += selected.GetItemTotal(qty);
+          found = true;
+          break;
+        }  
+      }
+                          
       //Compute Total
       double itemTotal = selected.GetItemTotal(qty);
       grandTotal += itemTotal;
