@@ -107,6 +107,12 @@ class Program
                     continue;
                 }
 
+                if (cartCount >= cart.Length)
+                {
+                    Console.WriteLine("Cart is full!");
+                    continue;
+                }
+
                 double itemTotal = selected.GetItemTotal(qty);
 
                 cart[cartCount] = selected;
@@ -178,7 +184,12 @@ class Program
                     Console.WriteLine("6. Back");
 
                     Console.Write("Enter choice: ");
-                    int c = int.Parse(Console.ReadLine());
+                    
+                    if (!int.TryParse(Console.ReadLine(), out int c))
+                    {
+                        Console.WriteLine("Invalid input!");
+                        continue;
+                    }
 
                     //View Cart
                     if (c == 1)
@@ -217,6 +228,8 @@ class Program
 
                         r--;
 
+                        cart[r].RemainingStock += cartQty[r];
+
                         for (int i = r; i < cartCount - 1; i++)
                         {
                             cart[i] = cart[i + 1];
@@ -225,7 +238,6 @@ class Program
                         }
 
                         cartCount--;
-
                         Console.WriteLine("Item removed!");
                     }
 
@@ -253,16 +265,25 @@ class Program
                         i2--;
 
                         Console.Write("Enter new quantity: ");
-                        int newQty = int.Parse(Console.ReadLine());
-
-                        if (newQty <= 0)
+                        
+                        if (!int.TryParse(Console.ReadLine(), out int newQty) || newQty <= 0)
                         {
                             Console.WriteLine("Invalid quantity!");
                             continue;
                         }
 
+                        cart[i2].RemainingStock += cartQty[i2];
+                        
+                        if (newQty > cart[i2].RemainingStock)
+                        {
+                            Console.WriteLine("Not enough stock!");
+                            cart[i2].RemainingStock -= cartQty[i2];
+                            continue;
+                        }
+
                         cartQty[i2] = newQty;
-                        cartSubtotal[i2] = cart[i2].GetItemTotal(newQty);
+                        cart[i2].RemainingStock -= newQty;
+                        cartSubtotal[i2] = cart [i2].GetItemTotal(newQty);
 
                         Console.WriteLine("Updated!");
                     }
@@ -319,8 +340,11 @@ class Program
 
                         Console.WriteLine("Change: PHP " + (payment - finalTotal));
 
-                        orderHistory[historyCount] = "Receipt #" + receiptNo.ToString("0000") + " - PHP " + finalTotal;
-                        historyCount++;
+                        if (historyCount < orderHistory.Length)
+                        {
+                            orderHistory[historyCount++] = "Receipt #" + receiptNo.ToString("0000") + " - PHP " + finalTotal;
+                        }
+                        
                         receiptNo++;
 
                         //Low Stock
@@ -333,6 +357,26 @@ class Program
 
                         cartCount = 0;
                         cartMenu = false;
+
+                        //Y/N
+                        string ans;
+
+                        while (true)
+                        {
+                            Console.Write("\nDo you want to continnue shopping? (Y/N): ");
+                            ans = Console.ReadLine().ToUpper();
+
+                            if (ans == "Y" || ans == "N")
+                                break;
+
+                            Console.WriteLine("Invalid input. Please Y or N only.");
+                        }
+
+                        if (ans == "N")
+                        {
+                            exit = true;
+                            Console.WriteLine("Thankyou for Shopping!");
+                        }
                     }
 
                     else if (c == 6)
@@ -374,4 +418,5 @@ class Program
             }
         }
     }
-}
+}      
+        
