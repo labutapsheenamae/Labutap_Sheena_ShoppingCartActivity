@@ -2,8 +2,7 @@
 "AI Usage in this Project"
 
 Which parts I used AI for?
-   I used Ai when:
-   - Building the shopping cart system using arrays and obbjects
+   - Building and improving the shopping cart system using arrays and objects
    - Fixing errors in my code
    - Improving validation for user input
    - Adding features like duplicate item handling and discount
