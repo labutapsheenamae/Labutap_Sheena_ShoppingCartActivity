@@ -330,10 +330,14 @@ class Program
                         while (true)
                         {
                             Console.Write("Enter payment: ");
-                            payment = double.Parse(Console.ReadLine());
-                    
+                            if (!double.TryParse(Console.ReadLine(), out payment))
+                            {
+                                Console.WriteLine("Invalid payment!");
+                                continue;
+                            }
+                            
                             if (payment >= finalTotal)
-                            break;
+                                break;
 
                             Console.WriteLine("Insufficient payment!");
                         }
